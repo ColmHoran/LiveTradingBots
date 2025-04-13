@@ -7,8 +7,8 @@ from typing import Dict
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
 
-from code.utilities.binance_futures import BinanceFutures
-from code.utilities.binance_api_triggers import BinanceTriggerOrders
+from utilities.binance_futures import BinanceFutures
+from utilities.binance_api_triggers import BinanceTriggerOrders
 
 # --- CONFIG ---
 params = {
@@ -26,11 +26,16 @@ params = {
 }
 
 
-key_path = 'LiveTradingBots/secret.json'
+key_path = 'secret.json'
 key_name = 'envelope'
-tracker_file = f"LiveTradingBots/code/strategies/envelope/tracker_{params['symbol'].replace('/', '-')}.json"
+tracker_file = f"/code/strategies/envelope/tracker_{params['symbol'].replace('/', '-')}.json"
 trigger_price_delta = 0.005
 
+if not os.path.exists(tracker_file):
+    os.makedirs(os.path.dirname(tracker_file), exist_ok=True)
+    with open(tracker_file, 'w') as file:
+        json.dump({"status": "ok_to_trade", "last_side": None, "stop_loss_ids": []}, file)
+        
 print(f"\n{datetime.now().strftime('%H:%M:%S')}: >>> starting execution for {params['symbol']}")
 
 with open(key_path, "r") as f:
