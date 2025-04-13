@@ -5,14 +5,20 @@ from typing import Any, Optional, Dict, List
 
 
 class BinanceFutures():
-    def __init__(self, api_setup: Optional[Dict[str, Any]] = None) -> None:
+    def __init__(self, api_setup: Optional[Dict[str, Any]] = None, use_testnet: bool = False) -> None:
         if api_setup is None:
-            self.session = ccxt.binanceusdm()
-        else:
-            api_setup.setdefault("options", {"defaultType": "future"})
-            self.session = ccxt.binanceusdm(api_setup)
+            api_setup = {}
 
-        self.markets = self.session.load_markets()
+        api_setup.setdefault("options", {"defaultType": "future"})
+
+        if use_testnet:
+            api_setup['urls'] = {
+                'api': {
+                    'public': 'https://testnet.binancefuture.com/fapi/v1',
+                    'private': 'https://testnet.binancefuture.com/fapi/v1'
+                }
+            }
+
 
     def fetch_ticker(self, symbol: str) -> Dict[str, Any]:
         return self.session.fetch_ticker(symbol)

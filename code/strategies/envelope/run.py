@@ -36,7 +36,7 @@ print(f"\n{datetime.now().strftime('%H:%M:%S')}: >>> starting execution for {par
 with open(key_path, "r") as f:
     api_setup = json.load(f)[key_name]
 
-binance = BinanceFutures(api_setup)
+binance = BinanceFutures(api_setup, use_testnet=True)
 trigger_api = BinanceTriggerOrders(api_setup['apiKey'], api_setup['secret'])
 
 if not os.path.exists(tracker_file):
